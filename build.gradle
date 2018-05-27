@@ -1,0 +1,58 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'net.orekyuu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-jdbc')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.flywaydb:flyway-core')
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0.1'
+    compile 'com.github.orekyuu.moco-framework:chou:release-0.0.2'
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+// コードの生成先をsrcDirに追加
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir}/generated"
+        }
+    }
+}
+
+compileJava {
+    // コンパイルのたびに生成し直す
+    doFirst {
+        delete "${buildDir}/generated"
+        mkdir "${buildDir}/generated"
+    }
+    // デフォルトだとpluggable annotation processorが無効になっているので有効化
+    // 生成先はbuild/generated以下にする
+    options.compilerArgs += ['-s', "${buildDir}/generated"]
+}
