@@ -1,10 +1,5 @@
 package net.orekyuu.todo;
 
-import net.orekyuu.todo.Todo;
-import net.orekyuu.todo.TodoList;
-import net.orekyuu.todo.TodoService;
-import net.orekyuu.todo.Todoes;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -13,12 +8,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/todoes")
 public class TodoesController {
-
-    private TodoService todoService;
-
-    public TodoesController(TodoService todoService) {
-        this.todoService = todoService;
-    }
 
     @GetMapping
     public List<Todo> index() {
@@ -32,7 +21,7 @@ public class TodoesController {
 
     @PostMapping
     public void create(@RequestParam("memo") String memo) {
-        todoService.createTodo(memo);
+        Todoes.create(new Todo(memo, false, LocalDateTime.now().plusWeeks(2)));
     }
 
     @DeleteMapping("{id}")
